@@ -2,6 +2,7 @@
 import Easy.CoffeeVendingMachine.CoffeMachineDemo;
 import Easy.LoggingFramework.LoggerDemo;
 import Medium.PubSubSystem.PubSubDemo;
+import Medium.TicTacToe.TicTacToeDemo;
 import ParkingLotSystem.ParkingLotDemo;
 import StackOverFlow.StackOverFlowDemo;
 import TaskManagementSystem.TaskManagerDemo;
@@ -23,7 +24,9 @@ public class Main {
 
     //    TaskManagerDemo.run();
 
-    PubSubDemo.run();
+//    PubSubDemo.run();
+
+    TicTacToeDemo.run();
     
   }
 
