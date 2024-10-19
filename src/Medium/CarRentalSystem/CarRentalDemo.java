@@ -1,8 +1,12 @@
 package Medium.CarRentalSystem;
 
+import java.time.LocalDate;
+
 public class CarRentalDemo {
     public static void run() {
         CarRentalSystem carRentalSystem = CarRentalSystem.getInstance();
+
+        System.out.println(LocalDate.now());
 
         User user1 = new User("1","Babu","Babu@gmail.com","9390639493","DlNo1");
         User user2 = new User("2","Kiran","Babu@gmail.com","9390639493","DlNo1");

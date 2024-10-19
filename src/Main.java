@@ -1,6 +1,7 @@
 
 import Easy.CoffeeVendingMachine.CoffeMachineDemo;
 import Easy.LoggingFramework.LoggerDemo;
+import Medium.ATM.ATMDemo;
 import Medium.CarRentalSystem.CarRentalDemo;
 import Medium.PubSubSystem.PubSubDemo;
 import Medium.TicTacToe.TicTacToeDemo;
@@ -28,7 +29,8 @@ public class Main {
 //    PubSubDemo.run();
 
 //    TicTacToeDemo.run();
-    CarRentalDemo.run();
+//    CarRentalDemo.run();
+    ATMDemo.run();
 
   }
 
