@@ -26,4 +26,7 @@ minusMinutes()
 .getHour() -> gets the hour
 
 
+AtomicLong reservationId = new AtomicLong(0); // Long value which is thread safe with inital value 0
+reservationId.incrementAndGet(); // Increment value by 1
+
 
