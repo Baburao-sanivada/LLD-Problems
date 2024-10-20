@@ -5,6 +5,7 @@ import Medium.ATM.ATMDemo;
 import Medium.CarRentalSystem.CarRentalDemo;
 import Medium.HotelManagementSystem.HotelMS;
 import Medium.HotelManagementSystem.HotelMSDemo;
+import Medium.LinkedIn.LinkedInDemo;
 import Medium.PubSubSystem.PubSubDemo;
 import Medium.TicTacToe.TicTacToeDemo;
 import ParkingLotSystem.ParkingLotDemo;
@@ -33,7 +34,9 @@ public class Main {
 //    TicTacToeDemo.run();
 //    CarRentalDemo.run();
 //    ATMDemo.run();
-    HotelMSDemo.run();
+//    HotelMSDemo.run();
+
+    LinkedInDemo.run();
 
   }
 
