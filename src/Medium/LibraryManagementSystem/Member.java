@@ -1,6 +1,8 @@
 package Medium.LibraryManagementSystem;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Member {
@@ -16,8 +18,27 @@ public class Member {
         borrowHistory = new CopyOnWriteArrayList<>();
     }
 
+    public void showTransactions(){
+        System.out.println("---------------------------------------");
+        System.out.println("History");
+        for(Borrow borrow: borrowHistory){
+            System.out.println("Id: "+borrow.getBorrowId());
+            System.out.println("Books Taken");
+            for(Book book: borrow.getBooks()){
+                System.out.println(book.getTitle());
+            }
+            System.out.println("returnTime: "+borrow.getReturnTime());
+            System.out.println("isReturned: "+borrow.getReturnStatus());
+        }
+        System.out.println("---------------------------------------");
+    }
+
     public void addBorrowTransaction(Borrow borrow){
         borrowHistory.add(borrow);
+    }
+
+    public void returnTransaction(Borrow borrow){
+        borrow.setAsReturned();
     }
 
     public String getMemberId() {

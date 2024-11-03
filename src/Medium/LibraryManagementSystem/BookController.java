@@ -34,4 +34,17 @@ public class BookController {
             book.setBookStatus(AvailabilityStatus.AVAILABLE);
         }
     }
+
+    public void showAvailableBooks(){
+        System.out.println("------------------------------------------");
+        System.out.println("Books Available");
+        for(String key:books.keySet()){
+            Book book = books.get(key);
+            if(book.getBookStatus() == AvailabilityStatus.BORROWED) continue;
+            System.out.println("Title: "+book.getTitle());
+            System.out.println("Author: "+book.getAuthor());
+
+        }
+        System.out.println("------------------------------------------");
+    }
 }

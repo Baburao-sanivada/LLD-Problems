@@ -7,6 +7,7 @@ import Medium.ElevatorSystem.Elevator;
 import Medium.ElevatorSystem.ElevatorDemo;
 import Medium.HotelManagementSystem.HotelMS;
 import Medium.HotelManagementSystem.HotelMSDemo;
+import Medium.LibraryManagementSystem.LibraryMSDemo;
 import Medium.LinkedIn.LinkedInDemo;
 import Medium.PubSubSystem.PubSubDemo;
 import Medium.TicTacToe.TicTacToeDemo;
@@ -39,7 +40,9 @@ public class Main {
 //    HotelMSDemo.run();
 
 //    LinkedInDemo.run();
-    ElevatorDemo.run();
+//    ElevatorDemo.run();
+
+    LibraryMSDemo.run();
 
   }
 

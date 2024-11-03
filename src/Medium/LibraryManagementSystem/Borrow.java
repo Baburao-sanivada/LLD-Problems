@@ -8,12 +8,22 @@ public class Borrow {
     private final List<Book> books;
     private final LocalDateTime time;
     private final LocalDateTime returnTime;
+    private boolean isreturned;
 
     public Borrow(String borrowId, List<Book> books, LocalDateTime time, LocalDateTime returnTime) {
         this.borrowId = borrowId;
         this.books = books;
         this.time = time;
         this.returnTime = returnTime;
+        this.isreturned = false;
+    }
+
+    public boolean getReturnStatus(){
+        return isreturned;
+    }
+
+    public void setAsReturned(){
+        this.isreturned = true;
     }
 
     public String getBorrowId() {

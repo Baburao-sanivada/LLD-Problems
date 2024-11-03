@@ -18,4 +18,14 @@ public class MemberController {
         Member member = members.get(memberId);
         member.addBorrowTransaction(borrow);
     }
+
+    public void returnTransaction(String memberId,Borrow borrow){
+        Member member = members.get(memberId);
+        member.returnTransaction(borrow);
+    }
+
+    public void showMemberTransaction(String memberId){
+        Member member = members.get(memberId);
+        member.showTransactions();
+    }
 }
