@@ -10,6 +10,7 @@ import Medium.HotelManagementSystem.HotelMSDemo;
 import Medium.LibraryManagementSystem.LibraryMSDemo;
 import Medium.LinkedIn.LinkedInDemo;
 import Medium.PubSubSystem.PubSubDemo;
+import Medium.RestaurantManagementSystem.RMSDemo;
 import Medium.TicTacToe.TicTacToeDemo;
 import ParkingLotSystem.ParkingLotDemo;
 import StackOverFlow.StackOverFlowDemo;
@@ -42,8 +43,9 @@ public class Main {
 //    LinkedInDemo.run();
 //    ElevatorDemo.run();
 
-    LibraryMSDemo.run();
+//    LibraryMSDemo.run();
 
+    RMSDemo.run();
   }
 
   
