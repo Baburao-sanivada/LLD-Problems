@@ -3,6 +3,8 @@ import Easy.CoffeeVendingMachine.CoffeMachineDemo;
 import Easy.LoggingFramework.LoggerDemo;
 import Medium.ATM.ATMDemo;
 import Medium.CarRentalSystem.CarRentalDemo;
+import Medium.ElevatorSystem.Elevator;
+import Medium.ElevatorSystem.ElevatorDemo;
 import Medium.HotelManagementSystem.HotelMS;
 import Medium.HotelManagementSystem.HotelMSDemo;
 import Medium.LinkedIn.LinkedInDemo;
@@ -36,7 +38,8 @@ public class Main {
 //    ATMDemo.run();
 //    HotelMSDemo.run();
 
-    LinkedInDemo.run();
+//    LinkedInDemo.run();
+    ElevatorDemo.run();
 
   }
 
