@@ -1,4 +1,7 @@
+package OldProblems.Medium.PubSubSystem;
 
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class Topic {
     private final String name;

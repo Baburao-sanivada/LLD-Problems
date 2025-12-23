@@ -1,4 +1,4 @@
-
+package OldProblems.Medium.PubSubSystem;
 
 public class PrintSub implements Subscriber{
     private final String name;

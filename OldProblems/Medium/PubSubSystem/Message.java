@@ -1,3 +1,4 @@
+package OldProblems.Medium.PubSubSystem;
 
 public class Message{
     private final String content;

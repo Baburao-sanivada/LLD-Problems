@@ -1,4 +1,4 @@
-package Splitwise;
+package NewProblems.Splitwise;
 
 import Splitwise.Models.SplitType;
 
