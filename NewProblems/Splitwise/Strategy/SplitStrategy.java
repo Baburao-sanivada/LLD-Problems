@@ -1,6 +1,6 @@
-package Splitwise.Strategy;
+package NewProblems.Splitwise.Strategy;
 
-import Splitwise.Models.Split;
+import NewProblems.Splitwise.Models.Split;
 
 import java.util.List;
 import java.util.Map;

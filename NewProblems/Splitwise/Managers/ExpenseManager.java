@@ -1,6 +1,6 @@
-package Splitwise.Managers;
+package NewProblems.Splitwise.Managers;
 
-import Splitwise.Models.Expense;
+import NewProblems.Splitwise.Models.Expense;
 
 import java.util.Map;
 import java.util.Optional;

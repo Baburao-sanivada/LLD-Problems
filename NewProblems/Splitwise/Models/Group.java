@@ -1,4 +1,4 @@
-package Splitwise.Models;
+package NewProblems.Splitwise.Models;
 
 import java.util.ArrayList;
 import java.util.List;

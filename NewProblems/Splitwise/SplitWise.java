@@ -1,13 +1,13 @@
 package NewProblems.Splitwise;
 
-import Splitwise.Managers.ExpenseManager;
-import Splitwise.Managers.GroupManager;
-import Splitwise.Managers.UserManager;
-import Splitwise.Models.Expense;
-import Splitwise.Models.Group;
-import Splitwise.Models.SplitType;
-import Splitwise.Models.User;
-import Splitwise.Strategy.SplitStrategy;
+import NewProblems.Splitwise.Models.SplitType;
+import NewProblems.Splitwise.Managers.ExpenseManager;
+import NewProblems.Splitwise.Managers.GroupManager;
+import NewProblems.Splitwise.Managers.UserManager;
+import NewProblems.Splitwise.Models.Expense;
+import NewProblems.Splitwise.Models.Group;
+import NewProblems.Splitwise.Models.User;
+import NewProblems.Splitwise.Strategy.SplitStrategy;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SplitWise {
     private UserManager userManager;
     private ExpenseManager expenseManager;
-    private Splitwise.BalanceSheet balanceSheet;
+    private BalanceSheet balanceSheet;
     private GroupManager groupManager;
     private static SplitWise instance = null;
     private AtomicInteger userIdCounter = new AtomicInteger(0);
@@ -35,7 +35,7 @@ public class SplitWise {
     }
 
     private SplitWise(){
-        this.balanceSheet = Splitwise.BalanceSheet.getInstance();
+        this.balanceSheet = BalanceSheet.getInstance();
         this.userManager = UserManager.getInstance();
         this.expenseManager = ExpenseManager.getInstance();
         this.groupManager = GroupManager.getInstance();
@@ -61,7 +61,7 @@ public class SplitWise {
 
     public void addExpenseToGroup(String paidBy, SplitType splitType, double amount, String groupId, Map<String, Double> involvedUsers){
         String expenseId = "EXP" + expenseIdCounter.getAndIncrement();
-        SplitStrategy strategy = Splitwise.SplitStrategyFactory.getSplitStrategy(splitType, involvedUsers, paidBy, amount);
+        SplitStrategy strategy = SplitStrategyFactory.getSplitStrategy(splitType, involvedUsers, paidBy, amount);
         Expense expense = new Expense.ExpenseBuilder().setGroupId(groupId).setPaidUserId(paidBy).setAmount(amount).setSplitType(splitType).setSplitStrategy(strategy).build(expenseId);
         groupManager.addExpenseToGroup(groupId,expense);
     }
@@ -72,6 +72,10 @@ public class SplitWise {
 
     public void showUserBalances(String userId){
         balanceSheet.showUserBalances(userId);
+    }
+
+    public void settleAmount(String groupId, String fromUserId, String toUserId, double amount){
+        balanceSheet.settleBalance(groupId, fromUserId, toUserId, amount);
     }
 
 

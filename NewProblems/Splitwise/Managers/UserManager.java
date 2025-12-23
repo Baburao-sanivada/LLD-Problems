@@ -1,6 +1,6 @@
-package Splitwise.Managers;
+package NewProblems.Splitwise.Managers;
 
-import Splitwise.Models.User;
+import NewProblems.Splitwise.Models.User;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;

@@ -39,7 +39,6 @@ User -> Views Balance with Group Members, Also net
 
 ToDo:
 - Implement "Simplify Debt" feature using graph algorithms to minimize transactions.
-- Add functionality for users to settle debts directly through the app.
 - Update Read Me Clearly explaining the design and patterns used.
 
 
@@ -50,9 +49,5 @@ Simplify Debt:
   - Step 1: Calculate net balance for each user.
   - Step 2: Separate users into debtors and creditors.
   - Step 3: Greedily match debtors and creditors to minimize transactions.
-- Example:
-  - User A owes $50, User B owes $30, User C is owed $80.
-  - Transactions:
-    - User A pays User C $50.
-    - User B pays User C $30.
-- Result: Only two transactions instead of three, final balances remain unchanged.
+- Normal Greedy would be enough no need to over optimise use simple sorting and greedy matching.
+- Time Complexity: O(N log N) due to sorting.

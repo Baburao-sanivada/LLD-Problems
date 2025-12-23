@@ -1,6 +1,7 @@
 package NewProblems.Splitwise;
 
-import Splitwise.Models.SplitType;
+
+import NewProblems.Splitwise.Models.SplitType;
 
 import java.util.*;
 

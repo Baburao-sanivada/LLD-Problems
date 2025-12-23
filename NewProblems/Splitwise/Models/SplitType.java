@@ -1,4 +1,4 @@
-package Splitwise.Models;
+package NewProblems.Splitwise.Models;
 
 public enum SplitType {
     EQUAL,

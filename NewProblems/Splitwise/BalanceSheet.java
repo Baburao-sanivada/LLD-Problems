@@ -1,7 +1,7 @@
-package Splitwise;
+package NewProblems.Splitwise;
 
-import Splitwise.Models.Expense;
-import Splitwise.Models.Split;
+import NewProblems.Splitwise.Models.Expense;
+import NewProblems.Splitwise.Models.Split;
 
 import java.util.List;
 import java.util.Map;
@@ -108,5 +108,39 @@ public class BalanceSheet {
                 }
             }
         }
+    }
+
+
+    private void simplifyDebts(String groupId){
+        // Optional: Implement debt simplification logic here
+
+    }
+
+    public void settleBalance(String groupId, String fromUserId, String toUserId, double amount){
+        if(!balances.containsKey(groupId)){
+            System.out.println("No balances for group: " + groupId);
+            return;
+        }
+        Map<String, Map<String, Double>> groupBalances = balances.get(groupId);
+        if(!groupBalances.containsKey(toUserId) || !groupBalances.get(toUserId).containsKey(fromUserId)){
+            System.out.println("No balance to settle between " + fromUserId + " and " + toUserId + " in group " + groupId);
+            return;
+        }
+        double currentBalance = groupBalances.get(toUserId).get(fromUserId);
+        if(currentBalance < amount){
+            System.out.println("Settlement amount exceeds the owed amount. Current owed amount: " + currentBalance);
+            return;
+        }
+
+        // Update group balances
+        groupBalances.get(toUserId).put(fromUserId, currentBalance - amount);
+        groupBalances.get(fromUserId).put(toUserId, groupBalances.get(fromUserId).getOrDefault(toUserId, 0.0) + amount);
+
+        // Update user balances
+        userBalances.get(toUserId).put(fromUserId, userBalances.get(toUserId).get(fromUserId) - amount);
+        userBalances.get(fromUserId).put(toUserId, userBalances.get(fromUserId).getOrDefault(toUserId, 0.0) + amount);
+
+        System.out.println("Settled " + amount + " from " + fromUserId + " to " + toUserId + " in group " + groupId);
+
     }
 }

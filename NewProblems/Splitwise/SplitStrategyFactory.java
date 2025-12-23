@@ -1,10 +1,10 @@
-package Splitwise;
+package NewProblems.Splitwise;
 
-import Splitwise.Models.SplitType;
-import Splitwise.Strategy.EqualSplit;
-import Splitwise.Strategy.ExactSplit;
-import Splitwise.Strategy.PercentageSplit;
-import Splitwise.Strategy.SplitStrategy;
+import NewProblems.Splitwise.Models.SplitType;
+import NewProblems.Splitwise.Strategy.EqualSplit;
+import NewProblems.Splitwise.Strategy.ExactSplit;
+import NewProblems.Splitwise.Strategy.PercentageSplit;
+import NewProblems.Splitwise.Strategy.SplitStrategy;
 
 import java.util.Map;
 

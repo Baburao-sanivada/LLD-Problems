@@ -1,4 +1,4 @@
-package Splitwise.Models;
+package NewProblems.Splitwise.Models;
 
 public class User {
     private String userId;
