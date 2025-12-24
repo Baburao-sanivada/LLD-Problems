@@ -54,4 +54,9 @@ Simplify Debt:
 
 Questions:
 1. Can we directly talk with balance sheet or we need to go through user and group manager?
+   - Go from groupManager
 2. Simple debt should go from group manager / balance sheet directly?
+   - go from groupManager
+3. How do you handle user level balances
+   1. maintain a hashmap - if simplify debt is there then clear map and rebuild again by going through all groups
+   2. DO it based on query - Not asked many times - Very rarely queried - we can go with this

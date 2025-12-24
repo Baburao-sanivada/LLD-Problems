@@ -45,9 +45,9 @@ public class BalanceSheet {
             groupBalances.put(paidBy, new ConcurrentHashMap<>());
         }
 
-        if(!userBalances.containsKey(paidBy)){
-            userBalances.put(paidBy, new ConcurrentHashMap<>());
-        }
+//        if(!userBalances.containsKey(paidBy)){
+//            userBalances.put(paidBy, new ConcurrentHashMap<>());
+//        }
 
         for(Split split: splits){
             String owedBy = split.getUserId();
