@@ -67,104 +67,150 @@ Questions:
 -----
 READ ME by GPT
 
-Splitwise – Low Level Design (LLD)
+Splitwise – Low Level Design (Code Aligned)
 
-1. Problem Overview
-
-Splitwise is an expense-sharing system that allows users to split expenses within groups and settle debts with minimal transactions.
-
-The system supports:
-•	Multiple users and groups
-•	Different expense split types
-•	Group-level and global balance tracking
-•	Debt simplification to reduce unnecessary transactions
+This document explains the design, code structure, and decisions behind the Splitwise implementation in this repository. The goal is clarity, correctness, and interview-readiness rather than over-optimization.
 
 ⸻
 
-2. Functional Requirements
+1. Problem Statement
 
-Core Features
-•	Users can create groups and add members
-•	Users can add expenses inside a group
-•	Expenses can be split using:
-•	Equal split
-•	Percentage-based split
-•	Exact amount split
-•	Users can view:
-•	Balance with each member in a group
-•	Net balance across all groups (global view)
-•	System provides Simplify Debt feature to minimize transactions
-
-Simplify Debt
-•	Removes circular debts
-•	Reduces number of payments
-•	Final net balance remains unchanged
+Build an expense-sharing system similar to Splitwise where:
+•	Users can form groups
+•	Expenses can be split in multiple ways
+•	Users can see who owes whom
+•	Circular and redundant debts can be minimized
 
 ⸻
 
-3. High-Level Design Overview
-   •	GroupManager – Entry point for all group-related operations
-   •	ExpenseManager – Handles expense creation and validation
-   •	SplitStrategy – Decides how an expense is split
-   •	BalanceSheet – Stores who owes whom and how much
-   •	SimplifyDebtService – Optimizes balances at group level
-
-GroupManager acts as the aggregate root and coordinates all operations.
-
-⸻
-
-4. Core Entities (Nouns)
-   •	User
-   •	Group
-   •	Expense
-   •	Split
-   •	BalanceSheet
-
-Supporting Components
-•	UserManager
-•	GroupManager
-•	ExpenseManager
-•	SplitStrategy (interface / abstract class)
+2. Key Features
+   •	Group-based expense tracking
+   •	Supported split types:
+   •	Equal split
+   •	Percentage split
+   •	Exact amount split
+   •	Group-level balance view
+   •	Global (user-level) balance view
+   •	Simplify Debt feature to reduce number of transactions
 
 ⸻
 
-5. Class Responsibilities
+3. High-Level Design
 
-User
+User → GroupManager → ExpenseManager → SplitStrategy
+↓
+BalanceSheet
+↓
+SimplifyDebt (via GroupManager)
+
+Design Principles Followed
+•	Separation of concerns
+•	Single Responsibility Principle
+•	Open–Closed Principle
+•	Simplicity over premature optimization
+
+⸻
+
+4. Package Structure
+
+Splitwise
+├── Models
+│    ├── User
+│    ├── Group
+│    ├── Expense
+│    ├── Split
+│
+├── Managers
+│    ├── UserManager
+│    ├── GroupManager
+│    ├── ExpenseManager
+│
+├── Strategies
+│    ├── SplitStrategy
+│    ├── EqualSplitStrategy
+│    ├── PercentageSplitStrategy
+│    ├── ExactSplitStrategy
+│
+├── BalanceSheet
+└── Driver / Main
+
+
+⸻
+
+5. Core Entities and Responsibilities
+
+User (Model)
 •	Represents a system user
-•	Has userId and basic metadata
+•	Identified by userId
 
-Group
-•	Contains groupId and list of users
-•	Maintains reference to group BalanceSheet
+Group (Model)
+•	Contains list of users
+•	Has a single BalanceSheet
 
-Expense
+Expense (Model)
+•	Represents a single expense
 •	Contains:
-•	expenseId
-•	paidBy user
-•	total amount
+•	paidByUserId
+•	totalAmount
 •	groupId
 •	List
 
-Split
-•	Holds:
+Split (Model)
+•	Represents how much a user owes in an expense
+•	Contains:
 •	userId
-•	amount owed
-
-BalanceSheet
-•	Stores balances as:
-•	who owes whom and how much
-•	Maintains group-level balances only
-•	Does NOT perform business logic
+•	amount
 
 ⸻
 
-6. Split Strategy Design
+6. Managers
+
+GroupManager (Aggregate Root)
+•	Main entry point for group-level operations
+•	Responsibilities:
+•	Add expense to group
+•	Fetch group balances
+•	Trigger simplify debt
+
+All interactions with BalanceSheet happen via GroupManager.
+
+⸻
+
+ExpenseManager
+•	Creates expenses
+•	Validates split correctness
+•	Delegates split calculation to SplitStrategy
+
+⸻
+
+UserManager
+•	Manages user creation and lookup
+
+⸻
+
+7. BalanceSheet Design
+
+Responsibility
+•	Stores balances in the form:
+
+who owes whom → amount
+
+	•	Maintains only group-level balances
+	•	Acts as a data store, not a business logic holder
+
+Why no logic inside BalanceSheet?
+•	Keeps the class simple
+•	Prevents mixing storage with computation
+•	Easier to test and extend
+
+⸻
+
+8. Split Strategy Design (Strategy Pattern)
 
 SplitStrategy (Interface / Abstract Class)
 
 Input:
-- Map<UserId, Double> userInputMap
+- userInputMap (userId → value)
 - totalAmount
 
 Output:
@@ -175,39 +221,39 @@ Implementations
 •	PercentageSplitStrategy
 •	ExactSplitStrategy
 
-This follows the Strategy Pattern and adheres to the Open–Closed Principle.
+Benefits
+•	New split types can be added without modifying existing code
+•	Follows Open–Closed Principle
 
 ⸻
 
-7. User Flow
+9. Simplify Debt Feature
 
-User → Add Expense
-→ Select Split Type
-→ Split Strategy calculates splits
-→ ExpenseManager validates
-→ BalanceSheet updated
-
-User → View Group Balance
-User → View Global Balance
-
+What is Simplify Debt?
+•	Minimizes number of transactions
+•	Removes circular and redundant debts
+•	Final net balance of each user remains unchanged
 
 ⸻
 
-8. Simplify Debt Design
+Where is Simplify Debt handled?
+•	Triggered from GroupManager
+•	Uses balances from BalanceSheet
+•	Logic is external to BalanceSheet
 
-Responsibility
-•	Simplify Debt is triggered from GroupManager
-•	Logic does NOT reside inside BalanceSheet
+⸻
 
-Algorithm (Greedy)
-1.	Calculate net balance for each user
+Algorithm Used (Greedy)
+1.	Compute net balance for each user
 2.	Separate users into:
-•	Debtors (negative balance)
-•	Creditors (positive balance)
+•	Debtors (negative net balance)
+•	Creditors (positive net balance)
 3.	Sort both lists
 4.	Greedily match debtor → creditor
-5.	Generate minimum transactions
-6.	Update group BalanceSheet
+5.	Generate minimum settlement transactions
+6.	Update BalanceSheet
+
+⸻
 
 Example
 
@@ -217,62 +263,65 @@ B owes C 100
 C owes A 100
 
 After Simplify:
-No transactions needed (circular debt removed)
+No transactions required
+
+
+⸻
 
 Complexity
 •	Time Complexity: O(N log N)
 •	Space Complexity: O(N)
 
-Greedy approach is sufficient; over-optimization adds complexity without real benefit.
+Greedy approach is sufficient for practical Splitwise use cases.
 
 ⸻
 
-9. User-Level Balance Handling
+10. User-Level Balance Handling
 
-Two approaches considered:
+Options Considered
+1.	Store and maintain global balances eagerly
+2.	Compute balances on demand (Chosen)
 
-Option 1: Pre-compute and store
-•	Clear and rebuild user balances after every simplify
-•	Higher complexity
+Chosen Approach
+•	When user balance is requested:
+•	Iterate through all groups user belongs to
+•	Aggregate net balances
 
-Option 2: Compute on query (Chosen)
-•	Iterate through groups user belongs to
-•	Aggregate balances dynamically
-
-Reason:
-User-level queries are infrequent, so on-demand computation keeps the system simple and clean.
-
-⸻
-
-10. Design Patterns Used
-    •	Strategy Pattern – For split types
-    •	Singleton Pattern – (Optional) for managers
-    •	Facade-like Design – GroupManager as entry point
-    •	Separation of Concerns – Data vs business logic
+Reason
+•	User-level queries are infrequent
+•	Avoids duplicated and inconsistent state
 
 ⸻
 
-11. Design Decisions Summary
-    •	BalanceSheet stores data only
-    •	GroupManager controls workflows
-    •	Simplify Debt is a group-level concern
+11. Design Patterns Used
+    •	Strategy Pattern – Expense splitting
+    •	Singleton (Optional) – Managers
+    •	Facade-like Pattern – GroupManager as entry point
+    •	Separation of Concerns – Data vs logic
+
+⸻
+
+12. Trade-offs and Decisions
     •	Greedy algorithm preferred over complex graph algorithms
+    •	No concurrency handling at current scope
+    •	Focus on correctness and clarity over optimization
 
 ⸻
 
-12. Future Enhancements
-    •	Multi-currency support
-    •	Expense editing and deletion
-    •	Persistent storage (DB)
-    •	Concurrency handling
+13. Future Enhancements
+    •	Persistent storage (Database)
+    •	Expense edit / delete support
+    •	Multi-currency handling
+    •	Concurrency control
     •	Payment gateway integration
 
 ⸻
 
-13. Notes for Interview Discussion
-    •	Focus on clarity over over-engineering
-    •	Explain trade-offs clearly
-    •	Keep debt simplification simple and correct
+14. Interview Notes
+    •	GroupManager is the aggregate root
+    •	BalanceSheet is a dumb data holder
+    •	Simplify Debt preserves net balance
+    •	Design favors simplicity and extensibility
 
 ⸻
 
