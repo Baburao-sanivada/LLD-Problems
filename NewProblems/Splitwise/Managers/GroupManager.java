@@ -42,4 +42,12 @@ public class GroupManager {
         expenseManager.addExpense(expense);
         balanceSheet.updateBalancesForExpense(expense);
     }
+
+    public void enableSimpleDebtCalculationForGroup(String groupId) {
+        balanceSheet.enableSimpleDebtCalculationForGroup(groupId);
+    }
+
+    public void settleBalance(String groupId, String fromUserId, String toUserId, double amount) {
+        balanceSheet.settleBalance(groupId, fromUserId, toUserId, amount);
+    }
 }

@@ -75,7 +75,11 @@ public class SplitWise {
     }
 
     public void settleAmount(String groupId, String fromUserId, String toUserId, double amount){
-        balanceSheet.settleBalance(groupId, fromUserId, toUserId, amount);
+        groupManager.settleBalance(groupId, fromUserId, toUserId, amount);
+    }
+
+    public void enableSimpleDebtCalculationForGroup(String groupId){
+        groupManager.enableSimpleDebtCalculationForGroup(groupId);
     }
 
 

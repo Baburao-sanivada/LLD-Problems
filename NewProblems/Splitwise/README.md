@@ -51,3 +51,7 @@ Simplify Debt:
   - Step 3: Greedily match debtors and creditors to minimize transactions.
 - Normal Greedy would be enough no need to over optimise use simple sorting and greedy matching.
 - Time Complexity: O(N log N) due to sorting.
+
+Questions:
+1. Can we directly talk with balance sheet or we need to go through user and group manager?
+2. Simple debt should go from group manager / balance sheet directly?

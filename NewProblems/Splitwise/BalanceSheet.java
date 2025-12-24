@@ -3,13 +3,13 @@ package NewProblems.Splitwise;
 import NewProblems.Splitwise.Models.Expense;
 import NewProblems.Splitwise.Models.Split;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BalanceSheet {
     Map<String, Map<String, Map<String, Double>>> balances;
     Map<String, Map<String,Double>> userBalances;
+    Set<String> simpleDebtEnabledGroups;
 
     private static BalanceSheet instance = null;
 
@@ -27,6 +27,7 @@ public class BalanceSheet {
     private BalanceSheet(){
         balances = new ConcurrentHashMap<>();
         userBalances = new ConcurrentHashMap<>();
+        simpleDebtEnabledGroups = ConcurrentHashMap.newKeySet();
     }
 
     public void updateBalancesForExpense(Expense expense){
@@ -71,6 +72,11 @@ public class BalanceSheet {
             userBalances.get(owedBy).put(paidBy, userBalances.get(owedBy).getOrDefault(paidBy, 0.0) - amountOwed);
 
         }
+
+        // Check if simple debt simplification is enabled for this group
+        if(simpleDebtEnabledGroups.contains(groupId)){
+            simplifyDebt(groupId);
+        }
     }
 
     public void showUserBalances(String userId){
@@ -110,10 +116,94 @@ public class BalanceSheet {
         }
     }
 
+    private void simplifyDebt(String groupId){
+        // Step 1: Calculate net balances for each user
+        Map<String, Double> netBalances = new ConcurrentHashMap<>();
+        Map<String, Map<String, Double>> groupBalances = balances.get(groupId);
+        for(String userId : groupBalances.keySet()) {
+            double netBalance = 0.0;
+            Map<String, Double> userBalanceMap = groupBalances.get(userId);
+            for (double amount : userBalanceMap.values()) {
+                netBalance += amount;
+            }
+            netBalances.put(userId, netBalance);
+        }
 
-    private void simplifyDebts(String groupId){
-        // Optional: Implement debt simplification logic here
+        // Step 2: Create lists of creditors and debtors, sorted by amount (descending)
+        List<Map.Entry<String, Double>> creditorsList = new ArrayList<>();
+        List<Map.Entry<String, Double>> debtorsList = new ArrayList<>();
 
+        for(Map.Entry<String, Double> entry : netBalances.entrySet()) {
+            String userId = entry.getKey();
+            double netBalance = entry.getValue();
+            if (netBalance > 0) {
+                creditorsList.add(new AbstractMap.SimpleEntry<>(userId, netBalance));
+            } else if (netBalance < 0) {
+                debtorsList.add(new AbstractMap.SimpleEntry<>(userId, -netBalance));
+            }
+        }
+
+        // Sort in descending order by amount
+        creditorsList.sort((a, b) -> Double.compare(b.getValue(), a.getValue()));
+        debtorsList.sort((a, b) -> Double.compare(b.getValue(), a.getValue()));
+
+        // Step 3: Settle debts using index pointers
+        int creditorIdx = 0;
+        int debtorIdx = 0;
+
+        List<Map.Entry<String, Map.Entry<String, Double>>> settlements = new ArrayList<>(); // Store [debtorId, creditorId, amount]
+
+        while (debtorIdx < debtorsList.size() && creditorIdx < creditorsList.size()) {
+            String debtorId = debtorsList.get(debtorIdx).getKey();
+            double debtAmount = debtorsList.get(debtorIdx).getValue();
+
+            String creditorId = creditorsList.get(creditorIdx).getKey();
+            double creditAmount = creditorsList.get(creditorIdx).getValue();
+
+            double settlementAmount = Math.min(debtAmount, creditAmount);
+
+            // Store settlement
+            settlements.add(new AbstractMap.SimpleEntry<>(
+                    debtorId,
+                    new AbstractMap.SimpleEntry<>(creditorId, settlementAmount)
+            ));
+
+            // Update amounts
+            debtorsList.get(debtorIdx).setValue(debtAmount - settlementAmount);
+            creditorsList.get(creditorIdx).setValue(creditAmount - settlementAmount);
+
+            // Move to next debtor if current one is settled
+            if (debtorsList.get(debtorIdx).getValue() == 0) {
+                debtorIdx++;
+            }
+            // Move to next creditor if current one is settled
+            if (creditorsList.get(creditorIdx).getValue() == 0) {
+                creditorIdx++;
+            }
+        }
+
+        // Step 4: Clear existing balances and rebuild with simplified settlements
+        for(String userId : groupBalances.keySet()) {
+            groupBalances.get(userId).clear();
+        }
+
+
+        // Step 5: Update groupBalances with only the simplified settlements
+        for (Map.Entry<String, Map.Entry<String, Double>> settlement : settlements) {
+            String debtorId = settlement.getKey();
+            String creditorId = settlement.getValue().getKey();
+            double amount = settlement.getValue().getValue();
+
+            // Debtor owes creditor
+            groupBalances.get(creditorId).put(debtorId, groupBalances.get(creditorId).getOrDefault(debtorId, 0.0) + amount);
+            groupBalances.get(debtorId).put(creditorId, groupBalances.get(debtorId).getOrDefault(creditorId, 0.0) - amount);
+        }
+    }
+
+
+
+    public void enableSimpleDebtCalculationForGroup(String groupId){
+        simpleDebtEnabledGroups.add(groupId);
     }
 
     public void settleBalance(String groupId, String fromUserId, String toUserId, double amount){
